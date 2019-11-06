@@ -58,9 +58,9 @@ def remove_upper_outliers(column, df):
     iqr = q3 - q1
     #IQR is all the values in the box made bewteen .25-.75 of the data. The middle 50.
     upper_bound = q3 + (iqr*1.5)
-    return df[column > upper_bound]
+    return df[column < upper_bound]
 
-def remove_lower_outliers(column):
+def remove_lower_outliers(column, df):
     '''
     Give it a Pandas Series/Column. This will return a Series of values that 
     are 1.5X above the .75 quantile
@@ -70,7 +70,7 @@ def remove_lower_outliers(column):
     iqr = q3 - q1
     #IQR is all the values in the box made bewteen .25-.75 of the data. The middle 50.
     lower_bound = q3 + (iqr*1.5)
-    return df[column < lower_bound]
+    return df[column > lower_bound]
 
 def standardize_train_test(train, test):
     """
@@ -92,7 +92,7 @@ def minmax_scale_train_test(train, test, minmax_range=(0,1)):
     scaler = MinMaxScaler(copy=True, feature_range=minmax_range).fit(train)
     train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
     test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
-    return scaler, train_scaled, test_scaled
+    return train_scaled, test_scaled, scaler
 
 
 # def remove_outliers_iqr(df, columns):
