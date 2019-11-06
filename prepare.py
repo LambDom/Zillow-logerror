@@ -3,6 +3,7 @@ preparation functions
 '''
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
 def handle_missing_values(df, prop_required_column= .95, prop_required_row = .8):
 
@@ -20,7 +21,7 @@ def handle_missing_values(df, prop_required_column= .95, prop_required_row = .8)
     returns:
     transformed dataframe
     '''
-    
+
     count_missing = df.isnull().sum()
     average_missing = count_missing/df.shape[0]
     missing_columns = pd.DataFrame({'num_rows_missing': count_missing, 'pct_rows_missing': average_missing})
@@ -32,3 +33,16 @@ def handle_missing_values(df, prop_required_column= .95, prop_required_row = .8)
     df = df.dropna( thresh = thresh )
     
     return df
+
+def standard_scaler(train, test):
+    '''
+    def standard_scaler(train, test):
+    
+    reveives train and test dataframes and returns their standard scalar transformations along with their scalar object for reference later
+    '''
+    scaler_object = StandardScaler(copy=True, 
+                                   with_mean=True, 
+                                   with_std=True).fit(train) 
+    scaled_train = apply_object(train, scaler_object)
+    scaled_test  = apply_object(test,  scaler_object)
+    return  scaled_train, scaled_test, scaler_object
