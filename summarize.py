@@ -1,4 +1,13 @@
 import pandas as pd
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+%matplotlib inline
+
+# ignore warnings
+import warnings
+warnings.filterwarnings("ignore")
 
 def nulls_by_col(df):
     #creates a series that has columns as index. The values are the amount of null rows.
@@ -93,11 +102,11 @@ def plot_inertias(df):
     ks = range(1,10)
     sse = []
     for k in ks:
-    kmeans = KMeans(n_clusters=k)
-    kmeans.fit(no_outliers)
+        kmeans = KMeans(n_clusters=k)
+        kmeans.fit(no_outliers)
 
     # inertia: Sum of squared distances of samples to their closest cluster center.
-    sse.append(kmeans.inertia_)
+        sse.append(kmeans.inertia_)
 
     print(pd.DataFrame(dict(k=ks, sse=sse)))
 
