@@ -72,3 +72,24 @@ def find_lower_outliers(column):
     
     return column[column < (q1 - 1.5*iqr)]
 
+def standardize_train_test(train, test):
+    """
+    Uses the sklearn StandardScaler. The train and test data are given as parameters. Scaler is fit to the
+    feature training dataset. Test and train are each transformed by this fitted StandardScaler. The scaled
+    version of train and test are returned, along with the scaler object that made their transformation.
+    """
+    scaler = StandardScaler(copy=True, with_mean=True, with_std=True).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled, scaler
+
+def minmax_scale_train_test(train, test, minmax_range=(0,1)):
+    """
+    Uses the sklearn MinMaxScaler. The train and test data are given as parameters. Scaler is fit to the
+    feature training dataset. Test and train are each transformed by this fitted MinMaxScaler. The scaled
+    version of train and test are returned, along with the scaler object that made their transformation.
+    """
+    scaler = MinMaxScaler(copy=True, feature_range=minmax_range).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return scaler, train_scaled, test_scaled
