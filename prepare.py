@@ -3,7 +3,7 @@ preparation functions
 '''
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 def handle_missing_values(df, prop_required_column= .95, prop_required_row = .8):
 
@@ -35,32 +35,32 @@ def handle_missing_values(df, prop_required_column= .95, prop_required_row = .8)
     return df
 
 
-def standard_scaler(train, test):
-    '''
-    def standard_scaler(train, test):
+# def standard_scaler(train, test):
+#     '''
+#     def standard_scaler(train, test):
     
-    reveives train and test dataframes and returns their standard scalar transformations along with their scalar object for reference later
-    '''
-    scaler_object = StandardScaler(copy=True, 
-                                   with_mean=True, 
-                                   with_std=True).fit(train) 
-    scaled_train = apply_object(train, scaler_object)
-    scaled_test  = apply_object(test,  scaler_object)
-    return  scaled_train, scaled_test, scaler_object
+#     reveives train and test dataframes and returns their standard scalar transformations along with their scalar object for reference later
+#     '''
+#     scaler_object = StandardScaler(copy=True, 
+#                                    with_mean=True, 
+#                                    with_std=True).fit(train) 
+#     scaled_train = apply_object(train, scaler_object)
+#     scaled_test  = apply_object(test,  scaler_object)
+#     return  scaled_train, scaled_test, scaler_object
 
-def find_upper_outliers(column):
+def remove_upper_outliers(column, df):
     '''
-    Give it a Pandas Series/Column. This will return a a Series of values that 
-    are 1.5X above the .75 quantile
+    Give it a Pandas Series/Column, and the DataFrame it came from. 
+    This will return the dataframe without the outliers above the upperbound.
     '''
     #Using the quantile function of a Series, lower and upper side of the IQR box is defined.
     q1, q3 = column.quantile([.25, .75])
     iqr = q3 - q1
     #IQR is all the values in the box made bewteen .25-.75 of the data. The middle 50.
-    
-    return column[column < (q3 + 1.5*iqr)]
+    upper_bound = q3 + (iqr*1.5)
+    return df[column < upper_bound]
 
-def find_lower_outliers(column):
+def remove_lower_outliers(column, df):
     '''
     Give it a Pandas Series/Column. This will return a Series of values that 
     are 1.5X above the .75 quantile
@@ -69,6 +69,37 @@ def find_lower_outliers(column):
     q1, q3 = column.quantile([.25, .75])
     iqr = q3 - q1
     #IQR is all the values in the box made bewteen .25-.75 of the data. The middle 50.
-    
-    return column[column < (q1 - 1.5*iqr)]
+    lower_bound = q3 + (iqr*1.5)
+    return df[column > lower_bound]
 
+def standardize_train_test(train, test):
+    """
+    Uses the sklearn StandardScaler. The train and test data are given as parameters. Scaler is fit to the
+    feature training dataset. Test and train are each transformed by this fitted StandardScaler. The scaled
+    version of train and test are returned, along with the scaler object that made their transformation.
+    """
+    scaler = StandardScaler(copy=True, with_mean=True, with_std=True).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled, scaler
+
+def minmax_scale_train_test(train, test, minmax_range=(0,1)):
+    """
+    Uses the sklearn MinMaxScaler. The train and test data are given as parameters. Scaler is fit to the
+    feature training dataset. Test and train are each transformed by this fitted MinMaxScaler. The scaled
+    version of train and test are returned, along with the scaler object that made their transformation.
+    """
+    scaler = MinMaxScaler(copy=True, feature_range=minmax_range).fit(train)
+    train_scaled = pd.DataFrame(scaler.transform(train), columns=train.columns.values).set_index([train.index.values])
+    test_scaled = pd.DataFrame(scaler.transform(test), columns=test.columns.values).set_index([test.index.values])
+    return train_scaled, test_scaled, scaler
+
+
+# def remove_outliers_iqr(df, columns):
+#     for col in columns:
+#         q75, q25 = np.percentile(df[col], [75,25])
+#         ub = 3*stats.iqr(df[col]) + q75
+#         lb = q25 - 3*stats.iqr(df[col])
+#         df = df[df[col] <= ub]
+#         df = df[df[col] >= lb]
+#     return df
