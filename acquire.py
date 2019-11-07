@@ -90,7 +90,7 @@ def wrangle_zillow():
     zillow['has_fireplace'] = zillow.fireplacecnt > 0
     zillow['has_deck'] = ~zillow.decktypeid.isna()
     zillow['has_garage'] = zillow.garagetotalsqft > 0
-    zillow['has pool_or_spa'] = (zillow.hashottuborspa == 1) | (zillow.poolcnt> 0)
+    zillow['has_pool_or_spa'] = (zillow.hashottuborspa == 1) | (zillow.poolcnt> 0)
     zillow['has_yardbuilding'] = (zillow.yardbuildingsqft17) > 0 | (zillow.yardbuildingsqft26 > 0)
     zillow['multistory'] = zillow.numberofstories > 1
 
