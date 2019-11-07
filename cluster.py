@@ -54,20 +54,28 @@ def make_structure_data(df):
 #PREPARE
 ########
 
-def scale_and_prune_data(df):
+def split_data(df):
     """
-    Takes a dataframe and returns it using standard scaling and removes the high outliers in house & lot size.
+    Takes a dataframe, breaks it into 80-20 training/testing sets
     """
     train, test = train_test_split(df, train_size = .8, random_state = 123)
     train.drop(['latitude','longitude'],axis=1,inplace=True)
     test.drop(['latitude','longitude'],axis=1,inplace=True)
-    standard_train, standard_test, standard_object = prepare.standardize_train_test(train, test)
-    standard_train = prepare.remove_upper_outliers(standard_train.calculatedfinishedsquarefeet, standard_train)
-    standard_train = prepare.remove_upper_outliers(standard_train.lotsizesquarefeet, standard_train)
-    standard_test = prepare.remove_upper_outliers(standard_test.calculatedfinishedsquarefeet, standard_test)
-    standard_test = prepare.remove_upper_outliers(standard_test.lotsizesquarefeet, standard_test)
+    return train, test
 
-    return standard_train, standard_test, standard_object
+def standardize_train_test(train,test):
+    standard_train, standard_test, blob = prepare.standardize_train_test(train, test)
+    return standard_train, standard_test, blob
+
+def remove_upper_outliers(train, test):
+    """
+    Removes the upper outliers of the calculatedfinishedsquarefeet and lotsizesquarefeet
+    """
+    train = prepare.remove_upper_outliers(train.calculatedfinishedsquarefeet, train)
+    train = prepare.remove_upper_outliers(train.lotsizesquarefeet, train)
+    test = prepare.remove_upper_outliers(test.calculatedfinishedsquarefeet, test)
+    test = prepare.remove_upper_outliers(test.lotsizesquarefeet, test)
+    return train, test
 
 # train, test = train_test_split(structures_df, train_size = .8, random_state = 123)
 
