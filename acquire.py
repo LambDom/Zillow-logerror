@@ -163,5 +163,8 @@ def wrangle_zillow():
 
     #drop remaining nulls
     zillow.dropna(inplace= True)
+
+    #get absolute value of log error
+    zillow['abs_logerror'] = zillow.logerror.apply(abs)
     
     return zillow
