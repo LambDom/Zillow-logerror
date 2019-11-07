@@ -26,7 +26,7 @@ warnings.filterwarnings("ignore")
 def get_data():
     df = pd.read_csv('data.csv')
     lat_long = df[['latitude','longitude']]
-    return df, lat
+    return df, lat_long
 
 #CLEAN
 ######
@@ -43,7 +43,7 @@ def get_data():
 # structures_df.dropna(inplace=True)
 
 def make_structure_data(df):
-    house_vars = ['fullbathcnt','bathroomcnt','bedroomcnt','calculatedfinishedsquarefeet',
+    house_vars = ['bathroomcnt','bedroomcnt','calculatedfinishedsquarefeet',
             'heatingorsystemtypeid','lotsizesquarefeet','yearbuilt','structuretaxvaluedollarcnt', 
             'taxvaluedollarcnt','latitude','longitude','logerror']
     structures_df = df[house_vars]
@@ -58,14 +58,14 @@ def scale_and_prune_data(df):
     """
     Takes a dataframe and returns it using standard scaling and removes the high outliers in house & lot size.
     """
-    train, test = train_test_split(structures_df, train_size = .8, random_state = 123)
+    train, test = train_test_split(df, train_size = .8, random_state = 123)
     train.drop(['latitude','longitude'],axis=1,inplace=True)
     test.drop(['latitude','longitude'],axis=1,inplace=True)
     standard_train, standard_test, standard_object = prepare.standardize_train_test(train, test)
-    standard_train = prepare.remove_upper_outliers(standard_train.calculatedfinishedsquarefeet, train)
-    standard_train = prepare.remove_upper_outliers(standard_train.lotsizesquarefeet, train)
-    standard_test = prepare.remove_upper_outliers(standard_test.calculatedfinishedsquarefeet, train)
-    standard_test = prepare.remove_upper_outliers(standard_test.lotsizesquarefeet, train)
+    standard_train = prepare.remove_upper_outliers(standard_train.calculatedfinishedsquarefeet, standard_train)
+    standard_train = prepare.remove_upper_outliers(standard_train.lotsizesquarefeet, standard_train)
+    standard_test = prepare.remove_upper_outliers(standard_test.calculatedfinishedsquarefeet, standard_test)
+    standard_test = prepare.remove_upper_outliers(standard_test.lotsizesquarefeet, standard_test)
 
     return standard_train, standard_test, standard_object
 
@@ -114,8 +114,11 @@ def make_clusters(df, n_clusters=3):
 #VISUALS
 ##########
 
-def show_clusters_on_map(df):
-    sns.scatterplot(data=df, x='longitude', y='latitude', hue='cluster_labels3')
+def show_clusters_on_map(df, cluster_label='cluster_labels'):
+    temp = pd.read_csv('data.csv')
+    lat_long = temp[['latitude','longitude']]
+    df[['latitude','longitude']] = lat_long
+    sns.scatterplot(data=df, x='longitude', y='latitude', hue=cluster_label)
 
 def show_data_on_map(df):
     sns.scatterplot(data=df, x='longitude', y='latitude')
