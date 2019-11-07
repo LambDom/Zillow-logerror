@@ -103,7 +103,7 @@ def plot_inertias(df):
     sse = []
     for k in ks:
         kmeans = KMeans(n_clusters=k)
-        kmeans.fit(no_outliers)
+        kmeans.fit(df)
 
     # inertia: Sum of squared distances of samples to their closest cluster center.
         sse.append(kmeans.inertia_)
