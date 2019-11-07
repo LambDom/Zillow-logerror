@@ -1,5 +1,6 @@
 import pandas as pd
 import seaborn as sns
+from sklearn.cluster import KMeans
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
