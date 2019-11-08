@@ -69,14 +69,14 @@ def get_zillow_chunk():
     df.drop_duplicates(subset ="parcelid", keep = 'first', inplace = True) 
     return df
 
-def get_mall_customers():
-    query = '''
-    SELECT *
-    FROM customers
-    ;
-    '''
-    df = pd.read_sql(query, get_connection('mall_customers'))
-    return df 
+# def get_mall_customers():
+#     query = '''
+#     SELECT *
+#     FROM customers
+#     ;
+#     '''
+#     df = pd.read_sql(query, get_connection('mall_customers'))
+#     return df 
 
 def wrangle_zillow():
     #get zillow data

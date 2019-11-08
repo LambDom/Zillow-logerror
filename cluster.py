@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
+from sklearn import metrics 
+from scipy.spatial.distance import cdist 
 
 import acquire
 import summarize
@@ -130,3 +132,32 @@ def show_clusters_on_map(df, cluster_label='cluster_labels'):
 
 def show_data_on_map(df):
     sns.scatterplot(data=df, x='longitude', y='latitude')
+
+def list_inertia_scores(X):
+    distortions = [] 
+    inertias = [] 
+    mapping1 = {} 
+    mapping2 = {} 
+    K = range(1,10) 
+
+    for k in K: 
+        #Building and fitting the model 
+        kmeanModel = KMeans(n_clusters=k).fit(X) 
+        kmeanModel.fit(X)     
+            
+        distortions.append(sum(np.min(cdist(X, kmeanModel.cluster_centers_, 
+                            'euclidean'),axis=1)) / X.shape[0]) 
+        inertias.append(kmeanModel.inertia_) 
+
+        mapping1[k] = sum(np.min(cdist(X, kmeanModel.cluster_centers_, 
+                        'euclidean'),axis=1)) / X.shape[0] 
+        mapping2[k] = kmeanModel.inertia_ 
+
+
+    for key,val in mapping1.items(): 
+        print(str(key)+' : '+str(val)) 
+
+def my_inv_transform(scaler, train_scaled):
+    df = pd.DataFrame(scaler.inverse_transform(train_scaled), columns=train_scaled.columns.values).set_index([train_scaled.index.values])
+    return scaler, df
+
