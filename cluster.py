@@ -128,7 +128,7 @@ def show_clusters_on_map(df, cluster_label='cluster_labels'):
     temp = pd.read_csv('data.csv')
     lat_long = temp[['latitude','longitude']]
     df[['latitude','longitude']] = lat_long
-    sns.scatterplot(data=df, x='longitude', y='latitude', hue=cluster_label)
+    sns.scatterplot(data=df, x='longitude', y='latitude', hue=cluster_label, alpha = .2)
 
 def show_data_on_map(df):
     sns.scatterplot(data=df, x='longitude', y='latitude')
