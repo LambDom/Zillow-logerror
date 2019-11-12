@@ -24,3 +24,28 @@ This project was inspired by a caggle competition posted by zillow to identify f
 1) Project Notebook showing the data pipeline process
 2) Supporting .py files required to run notebook
 3) Verbal presentation of finding to class
+
+### Data Dictionary: 
+- bathroom_cnt: Number of Bathrooms
+- bedroom_cnt: Number of Bedrooms
+- square_feet: Square Footage of Home
+- lot_sqr_ft: Square Footage of Lot
+- building_value: tax value of structures
+- total_value: total tax value
+- land_value: tax value of lot land
+- tax_amount: amount of property tax paid monthly
+- has_garage: boolean value of property having a garage
+- multistory: boolean value of if the property has > 1 story
+- bed_bath_cnt: sum of bedroom and bathrooms
+- home_age: age of house at assessment in 2016
+- cluster_labels: labels of clusters applied to data
+- logerror: error in zestimate of home price on logarythmic scale
+- latitude: Latitude of property
+- longitude: Longitude of property
+- abs_logerror: absolute value of error in zestimate on logarythmic scale
+- los_angeles: 1 if property is in Los Angeles County
+- orange: 1 if property is in Orange County
+- ventura: 1 if property is in Ventura County
+- abs_baseline: average of abs_logerror values
+- log_baseline: average of logerror values
+​
